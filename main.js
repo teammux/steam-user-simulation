@@ -1,3 +1,19 @@
+class Day {
+  constructor() {
+    this.dayNumber = 1;
+    this.isWeekend = false;
+  }
+
+  nextDay() {
+    this.dayNumber++;
+    if (this.dayNumber % 7 <= 1) {
+      this.isWeekend = true;
+    } else {
+      this.isWeekend = false;
+    }
+  }
+}
+
 class Game {
   constructor() {
     this.name = 'game' + Math.floor(Math.random() * 10000)
@@ -18,17 +34,17 @@ class User {
     this.availableGamesCount = 0;
   }
 
-  dailyThings(day) {
-    if (day % 7 === 0) {
+  dailyThings() {
+    if (day.dayNumber % 7 === 0) {
       this.gotMonthlyIncome();
     }
-    if (this.games.length > 2) {
+    if (this.availableGamesCount > 2) {
       if (Math.random() >= 1 - 0.4/this.games.length) {
         this.checkSteam();
       } else {
         this.playGame();
       }
-    } else if (this.games.length > 0) {
+    } else if (this.availableGamesCount > 0) {
       if (Math.random() >= 0.7) {
         this.checkSteam();
       } else {
@@ -39,7 +55,7 @@ class User {
         this.checkSteam();
       }
     }
-    console.log(`games left: ${this.games.length}`);
+    console.log(`games left: ${this.availableGamesCount}`);
   }
 
   gotMonthlyIncome() {
@@ -71,14 +87,18 @@ class User {
   }
 
   playGame() {
-    let game;
+    let game, playTime;
     for (let g of this.games) {
       if (g.contentLength > 0) {
         game = g;
         break;
       }
     }
-    let playTime = Math.floor(Math.random() * 4) + 1;
+    if (day.isWeekend) {
+      playTime = Math.floor(Math.random() * 4) + 4;
+    } else {
+      playTime = Math.floor(Math.random() * 4) + 1;
+    }
     console.log(`user played ${game.name} for ${playTime} hour(s)`);
     game.play(playTime);
     if (game.contentLength === 0) {
@@ -89,16 +109,16 @@ class User {
 
 }
 
-let day = 1;
+let day = new Day();
 let user = new User();
 
 const timeGoes = () => {
   setTimeout(() => {
     timeGoes();
   }, 5000);
-  console.log(`day ${day}`);
-  user.dailyThings(day);
-  day++;
+  console.log(day.isWeekend ? `day ${day.dayNumber}, weekend` : `day ${day.dayNumber}`);
+  user.dailyThings();
+  day.nextDay();
 };
 
 timeGoes();
