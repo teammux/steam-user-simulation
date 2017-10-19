@@ -1,16 +1,21 @@
-const dummyData = [
-  { name: 'game1', price: 60, contentLength: 10 },
-  { name: 'game2', price: 30, contentLength: 20 },
-  { name: 'game3', price: 40, contentLength: 50 },
-  { name: 'game4', price: 10, contentLength: 15 },
-  { name: 'game5', price: 50, contentLength: 5 }
-];
+class Game {
+  constructor() {
+    this.name = 'game' + Math.floor(Math.random() * 10000)
+    this.price = Math.floor(Math.random() * 55) + 5;
+    this.contentLength = Math.floor(Math.random() * 25) + 5;
+  }
+
+  play(playTime) {
+    this.contentLength = this.contentLength <= playTime ? 0 : this.contentLength - playTime; 
+  }
+}
 
 class User {
   constructor() {
     this.cash = 100;
     this.monthlyIncome = 50;
     this.games = [];
+    this.availableGamesCount = 0;
   }
 
   dailyThings(day) {
@@ -21,13 +26,13 @@ class User {
       if (Math.random() >= 1 - 0.4/this.games.length) {
         this.checkSteam();
       } else {
-        this.playGame(this.games[0]);
+        this.playGame();
       }
     } else if (this.games.length > 0) {
       if (Math.random() >= 0.7) {
         this.checkSteam();
       } else {
-        this.playGame(this.games[0]);
+        this.playGame();
       }
     } else {
       if (Math.random() >= 0.3) {
@@ -44,10 +49,8 @@ class User {
 
   checkSteam() {
     console.log(`user opened Steam`);
-    let check1 = Math.floor(Math.random() * 5);
-    let check2 = Math.floor(Math.random() * 5);
-    this.evaluateGame(dummyData[check1]);
-    this.evaluateGame(dummyData[check2]);
+    this.evaluateGame(new Game());
+    this.evaluateGame(new Game());
   }
 
   evaluateGame(game) {
@@ -64,15 +67,23 @@ class User {
     console.log(`user bought ${game.name} for ${game.price}$`);
     this.cash -= game.price;
     this.games.push(game);
+    this.availableGamesCount++;
   }
 
-  playGame(game) {
+  playGame() {
+    let game;
+    for (let g of this.games) {
+      if (g.contentLength > 0) {
+        game = g;
+        break;
+      }
+    }
     let playTime = Math.floor(Math.random() * 4) + 1;
     console.log(`user played ${game.name} for ${playTime} hour(s)`);
-    game.contentLength = game.contentLength <= playTime ? 0 : game.contentLength - playTime;
+    game.play(playTime);
     if (game.contentLength === 0) {
       console.log(`user beated ${game.name}`);
-      this.games.shift();
+      this.availableGamesCount--;
     }
   }
 
