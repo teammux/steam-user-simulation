@@ -1,0 +1,9 @@
+# User-events
+These are events defined in BNF form to indicate possible event descisions based on User state
+
+<user_init> ::= <create_acct>
+<create_acct> ::= <visit_game_page> | <add_to_wishlist> | <submit_review>
+<visit_game_page> ::= <purchase> | <add_to_wishlist> | <submit_review> | <start_game> | <leave_game_page>
+<leave_game_page> ::= <register_page_visit_length>
+<start_game> ::= <end_game>
+<end_game> ::= <register_game_session_length>
