@@ -14,11 +14,25 @@ class Day {
   }
 }
 
+const GameType = {
+  action: 'Action',
+  strategy: 'Strategy',
+  rpg: 'RPG',
+  indie: 'Indie',
+  adventure: 'Adventure',
+  sports: 'Sports',
+  simulation: 'Simulation',
+  mmo: 'MMO',
+  free: 'Free'
+}
+
 class Game {
   constructor() {
-    this.name = 'game' + Math.floor(Math.random() * 10000)
-    this.price = Math.floor(Math.random() * 55) + 5;
+    this.name = 'game' + Math.floor(Math.random() * 10000);
+    let keys = Object.keys(GameType);
+    this.type = GameType[keys[ keys.length * Math.random() << 0]];
     this.contentLength = Math.floor(Math.random() * 25) + 5;
+    this.price = this.type === GameType.free ? 0 : Math.floor(Math.random() * 55) + 5;
   }
 
   play(playTime) {
@@ -80,7 +94,7 @@ class User {
   }
 
   buyGame(game) {
-    console.log(`user bought ${game.name} for ${game.price}$`);
+    console.log(`user bought ${game.type} game ${game.name} for ${game.price}$`);
     this.cash -= game.price;
     this.games.push(game);
     this.availableGamesCount++;
