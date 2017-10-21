@@ -46,6 +46,8 @@ class User {
     this.monthlyIncome = 50;
     this.games = [];
     this.availableGamesCount = 0;
+    let keys = Object.keys(GameType);
+    this.preferance = GameType[keys[ keys.length * Math.random() << 0]];
   }
 
   dailyThings() {
@@ -84,17 +86,22 @@ class User {
   }
 
   evaluateGame(game) {
-    console.log(`user checked ${game.name}`);
+    console.log(`user checked ${game.type} game ${game.name}`);
     if (game.price < this.cash) {
       console.log(`user found ${game.name} is affordable`);
-      this.buyGame(game);
+      if (game.type === this.preferance) {
+        console.log(`user like ${game.name} because it meets the user preference ${this.preferance}`);
+        this.buyGame(game);
+      } else if (Math.random() > 0.5) {
+        this.buyGame(game);
+      }
     } else {
       console.log(`user found ${game.name} is not affordable`);
     }
   }
 
   buyGame(game) {
-    console.log(`user bought ${game.type} game ${game.name} for ${game.price}$`);
+    console.log(`user bought ${game.name} for ${game.price}$`);
     this.cash -= game.price;
     this.games.push(game);
     this.availableGamesCount++;
@@ -105,7 +112,9 @@ class User {
     for (let g of this.games) {
       if (g.contentLength > 0) {
         game = g;
-        break;
+        if (game.type === this.preferance) {
+          break;
+        }
       }
     }
     if (day.isWeekend) {
