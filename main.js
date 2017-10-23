@@ -86,6 +86,10 @@ class User {
   }
 
   evaluateGame(game) {
+    // 50% chance to check(click) a not preferred game
+    if (Math.random() >= 0.5 && game.type !== this.preferance) {
+      return
+    }
     console.log(`user checked ${game.type} game ${game.name}`);
     if (game.price < this.cash) {
       console.log(`user found ${game.name} is affordable`);
